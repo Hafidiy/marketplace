@@ -1,0 +1,1 @@
+psql -U postgres -c "drop table users" "marketplace";

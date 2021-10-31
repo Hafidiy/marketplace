@@ -1,0 +1,48 @@
+<div class="wrapper ">
+  {{> sidebar feedbacksPage=true}}
+
+  <div class="main-panel" style="height: 100vh;">
+    {{> nav navTitle='Feedbacks'}}
+
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="d-flex align-items-center justify-content-between">
+            <a href="/add-user">
+              <button type="button" class="btn btn-primary">Add</button>
+            </a>
+            {{{ paginationOptimal routeName page last_page }}}
+          </div>
+          <div class="card mt-3">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                      IDD
+                    </th>
+                    <th>
+                      Name
+                    </th>
+                  </thead>
+                  <tbody>
+                    {{#each feedbacks as |feedback|}}
+                      <tr>
+                        <td>
+                          {{ feedback.id }}
+                        </td>
+                        <td>
+                          {{ feedback.name }}
+                        </td>
+                      </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

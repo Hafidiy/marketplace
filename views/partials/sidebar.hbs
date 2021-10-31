@@ -1,0 +1,161 @@
+<div class="sidebar" data-color="black" data-active-color="info">
+    <div class="logo">
+        <a href="/" class="simple-text logo-normal text-center">
+            Logo
+        </a>
+    </div>
+    <div class="sidebar-wrapper">
+        <ul class="nav">
+            {{#if dashboardPage}}
+                <li class="active">
+                    <a href="/">
+                        <i class="fas fa-university"></i>
+                        <p>главный</p>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a href="/">
+                        <i class="fas fa-university"></i>
+                        <p>главный</p>
+                    </a>
+                </li>
+            {{/if}}
+            {{#if usersPage}}
+                <li class="active">
+                    <a href="/users">
+                        <i class="fas fa-users"></i>
+                        <p>пользователи</p>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a href="/users">
+                        <i class="fas fa-users"></i>
+                        <p>пользователи</p>
+                    </a>
+                </li>
+            {{/if}}
+            {{!-- {{#if productsPage}}
+                <li class="active">
+                    <a href="/products">
+                        <i class="fas fa-box-open"></i>
+                        <p>Products</p>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a href="/products">
+                        <i class="fas fa-box-open"></i>
+                        <p>Products</p>
+                    </a>
+                </li>
+            {{/if}} --}}
+            {{#if shopsPage}}
+                <li class="active">
+                    <a href="/shops">
+                        <i class="fas fa-store-alt"></i>
+                        <p>магазины</p>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a href="/shops">
+                        <i class="fas fa-store-alt"></i>
+                        <p>магазины</p>
+                    </a>
+                </li>
+            {{/if}}
+            {{#if transactionsPage}}
+                <li class="active">
+                    <a href="/transactions">
+                        <i class="fas fa-comments-dollar"></i>
+                        <p>транзакции</p>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a href="/transactions">
+                        <i class="fas fa-comments-dollar"></i>
+                        <p>транзакции</p>
+                    </a>
+                </li>
+            {{/if}}
+            {{#if ordersPage}}
+                <li class="active">
+                    <a href="/orders">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>заказы</p>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a href="/orders">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>заказы</p>
+                    </a>
+                </li>
+            {{/if}}
+            {{#if rolesPage}}
+                <li class="active">
+                    <a href="/roles">
+                        <i class="fas fa-user-lock"></i>
+                        <p>роли</p>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a href="/roles">
+                        <i class="fas fa-user-lock"></i>
+                        <p>роли</p>
+                    </a>
+                </li>
+            {{/if}}
+            {{!-- {{#if categoriesPage}}
+                <li class="active">
+                    <a href="/categories">
+                        <i class="fas fa-layer-group"></i>
+                        <p>Categories</p>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a href="/categories">
+                        <i class="fas fa-layer-group"></i>
+                        <p>Categories</p>
+                    </a>
+                </li>
+            {{/if}} --}}
+            {{#if feedbacksPage}}
+                <li class="active">
+                    <a href="/feedbacks">
+                        <i class="fas fa-exchange-alt"></i>
+                        <p>отзывы</p>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a href="/feedbacks">
+                        <i class="fas fa-exchange-alt"></i>
+                        <p>отзывы</p>
+                    </a>
+                </li>
+            {{/if}}
+            {{#if filtersPage}}
+                <li class="active">
+                    <a href="/filters">
+                        <i class="fas fa-sort-amount-down-alt"></i>
+                        <p>фильтры</p>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a href="/filters">
+                        <i class="fas fa-sort-amount-down-alt"></i>
+                        <p>фильтры</p>
+                    </a>
+                </li>
+            {{/if}}
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="wrapper ">
+  {{> sidebar transactionsPage=true}}
+
+  <div class="main-panel" style="height: 100vh;">
+    {{> nav navTitle='Transactions'}}
+
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="d-flex align-items-center justify-content-between">
+            <a href="/add-user">
+              <button type="button" class="btn btn-primary">Add</button>
+            </a>
+            {{{ paginationOptimal routeName page last_page }}}
+          </div>
+          <div class="card mt-3">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                      #
+                    </th>
+                    <th>
+                      Name
+                    </th>
+                  </thead>
+                  <tbody>
+                    {{#each transactions as |transaction|}}
+                      <tr>
+                        <td>
+                          {{ transaction.id }}
+                        </td>
+                        <td>
+                          {{ transaction.name }}
+                        </td>
+                      </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

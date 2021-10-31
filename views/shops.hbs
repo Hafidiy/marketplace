@@ -1,0 +1,42 @@
+<div class="wrapper ">
+  {{> sidebar shopsPage=true}}
+
+  <div class="main-panel" style="height: 100vh;">
+    {{> nav navTitle='магазины'}}
+
+    <div class="content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <th>
+                      ID
+                    </th>
+                    <th>
+                      Name
+                    </th>
+                  </thead>
+                  <tbody>
+                    {{#each shops as |shop|}}
+                      <tr>
+                        <td>
+                          {{ shop.id }}
+                        </td>
+                        <td>
+                          {{ shop.name }}
+                        </td>
+                      </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

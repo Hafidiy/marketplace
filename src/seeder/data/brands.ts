@@ -1,0 +1,16 @@
+export const initialBrands = [
+  { name: 'Nike' },
+  { name: 'Louis Vuitton' },
+  { name: 'Hermes' },
+  { name: 'Gucci' },
+  { name: 'Adidas' },
+  { name: 'Zara' },
+  { name: 'H&M' },
+  { name: 'Cartier' },
+  { name: 'Moncler' },
+  { name: 'Chanel' },
+  { name: 'Rolex' },
+  { name: 'Patek Philippe' },
+  { name: 'Prada' },
+  { name: 'Burberry' },
+];
