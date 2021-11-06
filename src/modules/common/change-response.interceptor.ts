@@ -21,6 +21,7 @@ export class ChangeResponseInterceptor implements NestInterceptor {
       data: null
     };
 
+    const now = Date.now();
     return next.handle().pipe(
       map((flow) => {
         // console.log('flow: ', flow);
@@ -34,6 +35,7 @@ export class ChangeResponseInterceptor implements NestInterceptor {
 
         response.data = {...flow};
 
+        console.log(`${Date.now() - now}ms`)
         return response;
       }),
       catchError(err => {
@@ -42,6 +44,7 @@ export class ChangeResponseInterceptor implements NestInterceptor {
         response.error = {...err.response}
         err.response = {...response};
 
+        console.log(`${Date.now() - now}ms`)
         throw err;
       })
     );

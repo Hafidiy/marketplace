@@ -3,17 +3,16 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { QueryDto } from "../common/models/query.dto";
 import { FeedbackDto } from "./models/feedback.dto";
-import { FeedbackEntity } from "./models/feedback.entity";
-import { IFeedback, IFeedbackPaginated } from "./models/feedback.interface";
+import { Feedback } from "./models/feedback.entity";
 
 @Injectable()
 export class FeedbackService {
   constructor(
-    @InjectRepository(FeedbackEntity)
-    private readonly feedbackRepository: Repository<FeedbackEntity>,
+    @InjectRepository(Feedback)
+    private readonly feedbackRepository: Repository<Feedback>,
   ) {}
 
-  async getFeedbacks(query?: QueryDto): Promise<IFeedbackPaginated> {
+  async getFeedbacks(query?: QueryDto) {
     let { page, count } = query || {};
 
     if(page && typeof page === 'string'){
@@ -41,7 +40,7 @@ export class FeedbackService {
 
   async createFeedback(
     data: FeedbackDto,
-  ): Promise<{ feedback: IFeedback }> {
+  ): Promise<{ feedback: Feedback }> {
     const { name } = data;
 
     try {
@@ -57,7 +56,7 @@ export class FeedbackService {
     }
   }
 
-  async getFeedback(condition): Promise<{ feedback: IFeedback }> {
+  async getFeedback(condition): Promise<{ feedback: Feedback }> {
     const feedback = await this.feedbackRepository.findOne(condition);
 
     if(!feedback){
@@ -78,7 +77,7 @@ export class FeedbackService {
   async updateFeedback(
     id: number,
     data: FeedbackDto,
-  ): Promise<{ feedback: IFeedback }> {
+  ): Promise<{ feedback: Feedback }> {
     const { name } = data;
 
     const { feedback } = await this.getFeedback({ id });

@@ -1,13 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PermissionSeederService } from './modules/permissions/permissions.services';
 import { RoleSeederService } from './modules/roles/roles.services';
-import { CategorySeederService } from './modules/categories/categories.services';
-import { CategoryItemSeederService } from './modules/category_items/category_items.services';
 import { OrderSeederService } from './modules/orders/orders.services';
 import { OrderItemSeederService } from './modules/order_items/order_items.services';
-import { BrandSeederService } from './modules/brands/brands.services';
 import { TransactionSeederService } from './modules/transactions/transactions.services';
-import { FeedbackSeederService } from './modules/feedbacks/feedbacks.services';
 import { RegionSeederService } from './modules/regions/regions.services';
 import { ShopSeederService } from './modules/shops/shops.services';
 // import { ProductSeederService } from './modules/products/products.services';
@@ -18,13 +14,9 @@ export class Seeder {
     private readonly logger: Logger,
     private readonly permissionSeederService: PermissionSeederService,
     private readonly roleSeederService: RoleSeederService,
-    private readonly categorySeederService: CategorySeederService,
-    private readonly categoryItemSeederService: CategoryItemSeederService,
     private readonly orderSeederService: OrderSeederService,
     private readonly orderItemSeederService: OrderItemSeederService,
-    private readonly brandSeederService: BrandSeederService,
     private readonly transactionSeederService: TransactionSeederService,
-    private readonly feedbackSeederService: FeedbackSeederService,
     private readonly regionSeederService: RegionSeederService,
     private readonly shopSeederService: ShopSeederService,
     // private readonly productSeederService: ProductSeederService,
@@ -36,16 +28,11 @@ export class Seeder {
 
       // completed = (await this.permissions()) && completed;
       // completed = (await this.roles()) && completed;
-      // completed = (await this.categories()) && completed;
-      // completed = (await this.category_items()) && completed;
       // completed = await this.orders() && completed;
       // completed = (await this.order_items()) && completed;
-      // completed = (await this.brands()) && completed;
-      completed = (await this.transactions()) && completed;
-      completed = (await this.feedbacks()) && completed;
-      completed = (await this.regions()) && completed;
-      completed = (await this.shops()) && completed;
-
+      // completed = (await this.transactions()) && completed;
+      // completed = (await this.regions()) && completed;
+      // completed = (await this.shops()) && completed;
       // completed = await this.products() && completed;
 
       console.log('completed: ', completed);
@@ -85,35 +72,6 @@ export class Seeder {
     }
   }
 
-  async categories() {
-    try {
-      const createdCategories = await this.categorySeederService.create();
-      this.logger.debug(
-        'No. of categories created : ' +
-          createdCategories.filter((e) => e).length,
-      );
-      return Promise.resolve(true);
-    } catch (err) {
-      console.log('Error Seeder categories: ', err);
-      Promise.reject(err);
-    }
-  }
-
-  async category_items() {
-    try {
-      const createdCategoryItems =
-        await this.categoryItemSeederService.create();
-      this.logger.debug(
-        'No. of category_items created : ' +
-          createdCategoryItems.filter((e) => e).length,
-      );
-      return Promise.resolve(true);
-    } catch (err) {
-      console.log('Error Seeder category_items: ', err);
-      Promise.reject(err);
-    }
-  }
-
   async orders() {
     try {
       const createdOrders = await this.orderSeederService.create();
@@ -140,19 +98,6 @@ export class Seeder {
     }
   }
 
-  async brands() {
-    try {
-      const createdBrands = await this.brandSeederService.create();
-      this.logger.debug(
-        'No. of brands created : ' + createdBrands.filter((e) => e).length,
-      );
-      return Promise.resolve(true);
-    } catch (err) {
-      console.log('Error Seeder brands: ', err);
-      Promise.reject(err);
-    }
-  }
-
   async transactions() {
     try {
       const createdTransactions = await this.transactionSeederService.create();
@@ -163,20 +108,6 @@ export class Seeder {
       return Promise.resolve(true);
     } catch (err) {
       console.log('Error Seeder transactions: ', err);
-      Promise.reject(err);
-    }
-  }
-
-  async feedbacks() {
-    try {
-      const createdFeedbacks = await this.feedbackSeederService.create();
-      this.logger.debug(
-        'No. of feedbacks created : ' +
-          createdFeedbacks.filter((e) => e).length,
-      );
-      return Promise.resolve(true);
-    } catch (err) {
-      console.log('Error Seeder feedbacks: ', err);
       Promise.reject(err);
     }
   }

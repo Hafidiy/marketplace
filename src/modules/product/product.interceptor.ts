@@ -21,21 +21,23 @@ export class ProductInterceptor implements NestInterceptor {
       type = 1;
     }
 
-    if(request.method === 'GET' && request.route.path === '/api/products'){
+    if (request.method === 'GET' && request.route.path === '/api/products') {
       type = 2;
     }
 
     return next.handle().pipe(
       map((flow) => {
-        if (type === 1) {
-          flow.product = takeChildToTop(flow.product, 'additional');
-        }
+        // if (type === 1) {
+        //   flow.product = takeChildToTop(flow.product, 'characteristics');
+        // }
 
-        if (type === 2) {
-          flow.products = flow.products.map(e => takeChildToTop(e, 'additional'))
-        }
+        // if (type === 2) {
+        //   flow.products = flow.products.map((e) =>
+        //     takeChildToTop(e, 'characteristics'),
+        //   );
+        // }
 
-        return flow
+        return flow;
       }),
     );
   }

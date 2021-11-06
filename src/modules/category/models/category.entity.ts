@@ -1,24 +1,41 @@
-import { CategoryItemEntity } from 'src/modules/category-item/models/category_item.entity';
+import { Product } from 'src/modules/product/models/product.entity';
 import {
-  BaseEntity,
   Column,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  Tree,
+  TreeChildren,
+  TreeParent,
 } from 'typeorm';
+import { CategoryCharacteristic } from './category_characteristic.entity';
 
 @Entity('categories')
-export class CategoryEntity extends BaseEntity {
+@Tree('materialized-path')
+export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
 
+  @TreeChildren({ cascade: true })
+  children: Category[];
+
+  @TreeParent({ onDelete: 'CASCADE' })
+  parent: Category;
+
   @OneToMany(
-    (type) => CategoryItemEntity,
-    (category_item) => category_item.parent,
-    { eager: true },
+    () => CategoryCharacteristic,
+    (characteristic) => characteristic.category,
+    { cascade: true },
   )
-  items: CategoryItemEntity[];
+  characteristics: CategoryCharacteristic[];
+
+  @OneToMany(
+    () => Product,
+    (product) => product.category,
+    { cascade: true },
+  )
+  products: Product[];
 }

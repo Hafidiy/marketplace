@@ -30,7 +30,7 @@ export class ProductController {
 
   @Get('/:id')
   getProductById(@Param('id', ParseIntPipe) id: number) {
-    return this.productService.getProductById(id);
+    return this.productService.getProduct(id);
   }
 
   @Delete('/:id')
@@ -41,7 +41,7 @@ export class ProductController {
   @Put('/:id')
   updateProduct(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body,
+    @Body() body: ProductDto,
   ) {
     return this.productService.updateProduct(id, body);
   }

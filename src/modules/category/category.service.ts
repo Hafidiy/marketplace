@@ -1,145 +1,103 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CategoryItemService } from '../category-item/category-item.service';
-import { QueryDto } from '../common/models/query.dto';
-import { CategoryDto } from './models/category.dto';
-import { CategoryEntity } from './models/category.entity';
-import { ICategory, ICategoryPaginated } from './models/category.interface';
+import { getManager, TreeRepository } from 'typeorm';
+import { Category } from './models/category.entity';
 
 @Injectable()
 export class CategoryService {
+  manager = getManager();
+
   constructor(
-    @InjectRepository(CategoryEntity)
-    private readonly categoryRepository: Repository<CategoryEntity>,
-    private categoryItemService: CategoryItemService,
+    @InjectRepository(Category)
+    private readonly categoryTreeRepository: TreeRepository<Category>,
   ) {}
 
-  async getCategories(query?: QueryDto): Promise<ICategoryPaginated> {
-    let { page, count } = query || {};
+  async getCategoriesTree(): Promise<{ categories: Category[] }> {
+    const categories = (
+      await this.categoryTreeRepository.findTrees({
+        relations: ['characteristics', 'characteristics.values'],
+      })
+    ).sort((a, b) => a.id - b.id);
 
-    if (page && typeof page === 'string') {
-      page = parseInt(page);
-    }
+    return { categories };
+  }
 
-    if (count && typeof count === 'string') {
-      count = parseInt(count);
-    }
+  async createCategory(name: string): Promise<{ category: Category }> {
+    const category = new Category();
+    category.name = name;
+    const result = await this.manager.save(category);
 
-    page = page && page > 1 ? page : 1;
-    count = count && count > 1 ? count : 10;
+    return { category: result };
+  }
 
-    const [categories, total] = await this.categoryRepository.findAndCount({
-      take: count,
-      skip: (page - 1) * count,
+  async getCategory(condition) {
+    const category = await this.categoryTreeRepository.findOne(condition, {
+      relations: ['characteristics', 'characteristics.values'],
     });
-
-    return {
-      categories,
-      meta: {
-        total,
-        page,
-        last_page: Math.ceil(total / count),
-      },
-    };
-  }
-
-  async createCategory(data: CategoryDto) {
-    const { name, items } = data;
-
-    let category;
-
-    try {
-      category = await this.categoryRepository.save({ name });
-    } catch (err) {
-      console.log('err: ', err);
-      if (err.code === '23505') {
-        throw new ConflictException('Category already exists');
-      } else {
-        throw new InternalServerErrorException();
-      }
-    }
-
-    for (let i = 0; i < items.length; i++) {
-      await this.categoryItemService.createCategoryItem({
-        name: items[i],
-        parent: category,
-      });
-    }
-
-    return { category };
-  }
-
-  async getCategory(condition): Promise<{ category: ICategory }> {
-    const category = await this.categoryRepository.findOne(condition);
 
     if (!category) {
       throw new NotFoundException();
     }
 
+    await this.categoryTreeRepository.findDescendantsTree(category);
+    await this.categoryTreeRepository.findAncestorsTree(category);
+
     return { category };
   }
 
   async deleteCategory(id: number): Promise<void> {
-    const result = await this.categoryRepository.delete(id);
+    const result = await this.categoryTreeRepository.delete(id);
 
     if (result.affected === 0) {
       throw new NotFoundException();
     }
   }
 
-  async updateCategory(
-    id: number,
-    data: CategoryDto,
-  ): Promise<{ category: ICategory }> {
-    const { name, items } = data;
-
+  async updateCategoryName(id: number, name: string) {
     const { category } = await this.getCategory({ id });
 
-    let sameItems = [];
+    category.name = name;
+    const result = await this.manager.save(category);
 
-    items.map((e) => {
-      category.items.map((ee) => {
-        if (e === ee.name) {
-          sameItems.push(e);
-        }
-      });
-    });
+    return { category: result };
+  }
 
-    let deleteItems = category.items.filter(e => !sameItems.some(ee => e.name === ee));
-    let newItems = items.filter(e => !sameItems.some(ee => e === ee));
+  async addCategoryChild(id: number, name: string) {
+    const { category } = await this.getCategory({ id });
 
-    for (let i = 0; i < deleteItems.length; i++) {
-      await this.categoryItemService.deleteCategoryItem(deleteItems[i].id);
-    }
-    delete category.items;
+    const child_category = new Category();
+    child_category.name = name;
+    child_category.parent = category;
+    const result = await this.manager.save(child_category);
 
-    for (let i = 0; i < newItems.length; i++) {
-      await this.categoryItemService.createCategoryItem({
-        name: newItems[i],
-        parent: category,
-      });
-    }
+    return { category: result };
+  }
 
-    try {
-      const updatedCategory = await this.categoryRepository.save({
-        ...category,
-        name,
-      });
+  async getCategoryById(id: number): Promise<{ category: Category }> {
+    const { categories } = await this.getCategoriesTree();
 
-      return { category: updatedCategory };
-    } catch (err) {
-      console.log('err: ', err);
-      if (err.code === '23505') {
-        throw new ConflictException('Category already exists');
-      } else {
-        throw new InternalServerErrorException();
+    for (let i = 0; i < categories.length; i++) {
+      const result = await this.findCategoryFromArray(id, categories[i]);
+      if (result) {
+        return { category: result };
       }
     }
+
+    throw new NotFoundException();
+  }
+
+  async findCategoryFromArray(id: number, residue: Category) {
+    if (residue.id === id) {
+      return residue;
+    }
+
+    for (let i = 0; i < residue.children.length; i++) {
+      const result = await this.findCategoryFromArray(id, residue.children[i]);
+      if (result) {
+        return result;
+      }
+    }
+
+    return null;
   }
 }

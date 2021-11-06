@@ -1,12 +1,38 @@
-import { IsNotEmpty } from "class-validator";
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class ProductDto {
-    @IsNotEmpty()
-    name: string;
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 
-    // @IsNotEmpty()
-    // brand: string;
+  @IsNotEmpty()
+  @IsString()
+  index_image: string;
 
-    // @IsNotEmpty()
-    // category: string;
+  @IsNotEmpty()
+  @IsNumber()
+  price: number;
+
+  @IsOptional()
+  @IsNumber()
+  sale: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  quantity: number;
+
+  @IsNotEmpty()
+  @IsString()
+  description: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  categoryId: number;
 }

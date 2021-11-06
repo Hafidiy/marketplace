@@ -1,52 +1,80 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProductEntity } from './models/product.entity';
-import { ProductAdditionalEntity } from './models/product_additional.entity';
+import { CategoryService } from '../category/category.service';
+import { ProductDto } from './models/product.dto';
+import { Product } from './models/product.entity';
 
 @Injectable()
 export class ProductService {
+  staticKeys = [
+    'id',
+    'name',
+    'index_image',
+    'price',
+    'sale',
+    'quantity',
+    'description',
+    'rating',
+    'images',
+  ];
+  // feedbacks,
   constructor(
-    @InjectRepository(ProductEntity)
-    private readonly productRepository: Repository<ProductEntity>,
-    @InjectRepository(ProductAdditionalEntity)
-    private readonly productAdditonalRepositroy: Repository<ProductAdditionalEntity>,
+    private categoryService: CategoryService,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
   ) {}
 
-  async getProducts() {
+  async getProducts(): Promise<{ products: Product[] }> {
     const products = await this.productRepository.find({
-      relations: ['additional'],
+      relations: [
+        'characteristics',
+        'characteristics.value',
+        'images',
+        'category',
+      ],
     });
 
     return { products };
   }
 
-  async createProduct(data) {
-    let keys = Object.keys(data).filter((e) => e !== 'name');
+  async createProduct(data: ProductDto): Promise<{ product: Product }> {
+    const {
+      name,
+      index_image,
+      price,
+      sale,
+      quantity,
+      description,
+      categoryId,
+    } = data;
 
-    const product = new ProductEntity();
-    product.name = data.name;
-    await product.save();
-
-    const additionals = [];
-    keys.map(async (a) => {
-      const additional = new ProductAdditionalEntity();
-      additional.key = a;
-      additional.value = data[a];
-      additional.product = product;
-      await additional.save();
-
-      additionals.push(additional);
+    const { category } = await this.categoryService.getCategory({
+      id: categoryId,
     });
 
-    product.additional = additionals;
+    const product = new Product();
+    product.name = name;
+    product.index_image = index_image;
+    product.price = price;
+    product.sale = sale;
+    product.quantity = quantity;
+    product.description = description;
+    product.rating = 1;
+    product.category = category;
+    await product.save();
 
-    return product;
+    return { product };
   }
 
-  async getProductById(id: number) {
-    const product = await this.productRepository.findOne(id, {
-      relations: ['additional'],
+  async getProduct(condition): Promise<{ product: Product }> {
+    const product = await this.productRepository.findOne(condition, {
+      relations: [
+        'characteristics',
+        'characteristics.value',
+        'images',
+        'category',
+      ],
     });
 
     if (!product) {
@@ -56,7 +84,7 @@ export class ProductService {
     return { product };
   }
 
-  async deleteProduct(id: number) {
+  async deleteProduct(id: number): Promise<void> {
     const result = await this.productRepository.delete(id);
 
     if (result.affected === 0) {
@@ -64,32 +92,35 @@ export class ProductService {
     }
   }
 
-  async updateProduct(id: number, data) {
-    const { product } = await this.getProductById(id);
+  async updateProduct(
+    id: number,
+    data: ProductDto,
+  ): Promise<{ product: Product }> {
+    const { product } = await this.getProduct(id);
 
-    if (data.name !== product.name) {
-      product.name = data.name;
-    }
+    const {
+      name,
+      index_image,
+      price,
+      sale,
+      quantity,
+      description,
+      categoryId,
+    } = data;
 
-    product.additional.map(async (e) => {
-      await this.productAdditonalRepositroy.delete(e.id);
+    const { category } = await this.categoryService.getCategory({
+      id: categoryId,
     });
-    delete product.additional;
+
+    product.name = name;
+    product.index_image = index_image;
+    product.price = price;
+    product.sale = sale;
+    product.quantity = quantity;
+    product.description = description;
+    product.category = category;
     await product.save();
 
-    let keys = Object.keys(data).filter((e) => e !== 'name');
-    const additionals = [];
-    keys.map(async (a) => {
-      const additional = new ProductAdditionalEntity();
-      additional.key = a;
-      additional.value = data[a];
-      additional.product = product;
-      await additional.save();
-
-      additionals.push(additional);
-    });
-
-    product.additional = additionals;
-    return product;
+    return { product };
   }
 }

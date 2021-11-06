@@ -16,10 +16,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+  // app.setBaseViewsDir(join(__dirname, '..', 'views'));
 
-  app.engine('hbs', hbsConfig.engine);
-  app.set('view engine', 'hbs');
+  // app.setViewEngine('hbs')
+  // app.engine('hbs', hbsConfig.engine);
+  // app.set('view engine', 'hbs');
 
   app.use(cookieParser());
   app.enableCors({

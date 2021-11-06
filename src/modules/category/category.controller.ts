@@ -7,38 +7,32 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
-import { QueryDto } from '../common/models/query.dto';
-import { CategoryService } from './category.service';
 import { CategoryDto } from './models/category.dto';
-import { ICategory } from './models/category.interface';
+import { CategoryService } from './category.service';
 
 @Controller('api/categories')
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Get()
-  getCategories(
-    @Query() queryDto: QueryDto,
-  ): Promise<{ categories: ICategory[] }> {
-    return this.categoryService.getCategories(queryDto);
+  getCategories() {
+    return this.categoryService.getCategoriesTree();
   }
 
   @Post()
   createCategory(@Body() body: CategoryDto) {
-    return this.categoryService.createCategory(body);
+    return this.categoryService.createCategory(body.name);
   }
 
   @Get('/:id')
-  getCategoryById(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<{ category: ICategory }> {
+  getCategoryById(@Param('id', ParseIntPipe) id: number) {
+    // return this.categoryService.getCategoryById(id);
     return this.categoryService.getCategory({ id });
   }
 
   @Delete('/:id')
-  deleteCategory(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  deleteCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.deleteCategory(id);
   }
 
@@ -46,7 +40,15 @@ export class CategoryController {
   updateCategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: CategoryDto,
-  ): Promise<{ category: ICategory }> {
-    return this.categoryService.updateCategory(id, body);
+  ) {
+    return this.categoryService.updateCategoryName(id, body.name);
+  }
+
+  @Post(':id')
+  addCategoryChild(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: CategoryDto,
+  ) {
+    return this.categoryService.addCategoryChild(id, body.name);
   }
 }
