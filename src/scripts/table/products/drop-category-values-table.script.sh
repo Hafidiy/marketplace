@@ -1,1 +1,1 @@
-psql -U postgres -c "drop table category_values" "marketplace";
+PGPASSWORD=postgres psql -U postgres -c "drop table category_values" "marketplace";

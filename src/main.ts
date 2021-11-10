@@ -4,10 +4,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { ChangeResponseInterceptor } from './modules/common/change-response.interceptor';
 import * as cookieParser from 'cookie-parser';
-import * as hbs from 'hbs';
-import * as exphbs from 'express-handlebars';
 import { join } from 'path';
-import { hbsConfig } from './config/engine.config';
+// import * as hbs from 'hbs';
+// import * as exphbs from 'express-handlebars';
+// import { hbsConfig } from './config/engine.config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);

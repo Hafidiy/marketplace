@@ -15,27 +15,27 @@ export class AuthService {
         private jwtService: JwtService
     ) {}
 
-    // async signUp(authCredentialsDto: AuthCredentialsDto) {
-    //     const { username, password } = authCredentialsDto;
+    async signUp(authCredentialsDto: AuthCredentialsDto) {
+        const { username, password } = authCredentialsDto;
 
-    //     console.log('username: ', username);
-    //     console.log('password: ', password);
+        console.log('username: ', username);
+        console.log('password: ', password);
 
-    //     try{
-    //         this.userService.createUser({
-    //             username,
-    //             first_name: 'Unknown',
-    //             last_name: 'Unknown',
-    //             password,
-    //         })
-    //     } catch(err){
-    //         if(err.code === '23505'){
-    //             throw new ConflictException('Username already exists')
-    //         } else {
-    //             throw new InternalServerErrorException()
-    //         }
-    //     }
-    // }
+        try{
+            this.userService.createUser({
+                username,
+                first_name: 'Unknown',
+                last_name: 'Unknown',
+                password,
+            })
+        } catch(err){
+            if(err.code === '23505'){
+                throw new ConflictException('Username already exists')
+            } else {
+                throw new InternalServerErrorException()
+            }
+        }
+    }
 
     async signIn(authCredentialsDto: AuthCredentialsDto, res: Response): Promise<{ user: IUser }> {
         const { username, password } = authCredentialsDto;

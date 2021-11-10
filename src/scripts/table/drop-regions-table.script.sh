@@ -1,1 +1,1 @@
-psql -U postgres -c "drop table regions" "marketplace";
+PGPASSWORD=postgres psql -U postgres -c "drop table regions" "marketplace";
