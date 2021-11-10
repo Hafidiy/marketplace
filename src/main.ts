@@ -5,9 +5,6 @@ import { AppModule } from './app.module';
 import { ChangeResponseInterceptor } from './modules/common/change-response.interceptor';
 import * as cookieParser from 'cookie-parser';
 import { join } from 'path';
-// import * as hbs from 'hbs';
-// import * as exphbs from 'express-handlebars';
-// import { hbsConfig } from './config/engine.config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -16,11 +13,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
-  // app.setBaseViewsDir(join(__dirname, '..', 'views'));
-
-  // app.setViewEngine('hbs')
-  // app.engine('hbs', hbsConfig.engine);
-  // app.set('view engine', 'hbs');
+  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+  app.setViewEngine('hbs')
 
   app.use(cookieParser());
   app.enableCors({

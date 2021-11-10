@@ -26,6 +26,11 @@ export class CommonController {
 
     return { url: image.path.slice(6) };
   }
+
+  @Get()
+  dashboard(@Res() res: Response) {
+    res.render('index');
+  }
 }
 
 
